@@ -19,5 +19,10 @@ class DatabaseSeeder extends Seeder
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
+
+        \App\Models\Post::factory(10)->create()->each(function ($post) {
+            \App\Models\Like::factory(rand(0, 5))->create(['post_id' => $post->id]);
+            \App\Models\Comment::factory(rand(0, 5))->create(['post_id' => $post->id]);
+        });
     }
 }
