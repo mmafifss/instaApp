@@ -1,5 +1,27 @@
-# Vue 3 + Vite
+# InstaApp Frontend
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+This is the Vue 3 frontend for InstaApp.
 
-Learn more about IDE Support for Vue in the [Vue Docs Scaling up Guide](https://vuejs.org/guide/scaling-up/tooling.html#ide-support).
+## Setup
+
+1. Install dependencies:
+   ```
+   npm install
+   ```
+2. Run the development server:
+   ```
+   npm run dev
+   ```
+
+## Features
+
+- User registration and login.
+- Post feed with images and text.
+- Like and comment on posts.
+- TailwindCSS for styling.
+- Connects to Laravel backend via REST API.
+
+## Notes
+
+- Ensure the backend API is running and accessible.
+- Configure API base URL in the frontend as needed.
