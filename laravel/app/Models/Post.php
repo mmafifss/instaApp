@@ -4,9 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\User;
-use App\Models\Like;
-use App\Models\Comment;
 
 class Post extends Model
 {
@@ -14,9 +11,15 @@ class Post extends Model
 
     protected $fillable = [
         'user_id',
-        'image_path',
+        'image_path', 
         'caption',
     ];
+
+    // Helper untuk mendapatkan URL gambar lengkap
+    public function getImageUrlAttribute()
+    {
+        return $this->image_path ? asset('storage/'.$this->image_path) : null;
+    }
 
     public function user()
     {
@@ -30,6 +33,6 @@ class Post extends Model
 
     public function comments()
     {
-        return $this->hasMany(Comment::class);
+        return $this->hasMany(Comment::class)->latest();
     }
 }

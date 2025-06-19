@@ -18,20 +18,26 @@ class PostController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'image' => 'required|image|max:2048',
-            'caption' => 'nullable|string|max:1000',
+        $validated = $request->validate([
+            'caption' => 'required_without:image|string|max:1000',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
-
-        $path = $request->file('image')->store('posts', 'public');
-
-        $post = Post::create([
-            'user_id' => Auth::id(),
-            'image_path' => $path,
-            'caption' => $request->caption,
-        ]);
-
-        return response()->json($post, 201);
+    
+        $post = new Post();
+        $post->user_id = auth()->id();
+        $post->caption = $request->caption;
+    
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('posts', 'public');
+            $post->image_path = $path;
+        }
+    
+        $post->save();
+    
+        return response()->json([
+            'message' => 'Post created successfully',
+            'post' => $post->load('user')
+        ], 201);
     }
 
     public function show(Post $post)
@@ -68,13 +74,20 @@ class PostController extends Controller
 
     public function destroy(Post $post)
     {
-        if (Gate::denies('delete-post', $post)) {
-            return response()->json(['message' => 'Unauthorized'], 403);
+        if ($post->user_id !== auth()->id()) {
+            return response()->json([
+                'message' => 'Unauthorized action'
+            ], 403);
         }
-
-        Storage::disk('public')->delete($post->image_path);
+    
+        if ($post->image_path) {
+            Storage::disk('public')->delete($post->image_path);
+        }
+    
         $post->delete();
-
-        return response()->json(['message' => 'Post deleted']);
+    
+        return response()->json([
+            'message' => 'Post deleted successfully'
+        ]);
     }
 }
