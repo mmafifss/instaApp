@@ -13,22 +13,23 @@ class LikeController extends Controller
     {
         $user = Auth::user();
 
-        if ($post->likes()->where('user_id', $user->id)->exists()) {
+        if (like::where('user_id', $post->id)->exists()) {
             return response()->json(['message' => 'Already liked'], 400);
         }
 
-        $post->likes()->create([
-            'user_id' => $user->id,
+        like::create([
+            'user_id' => $post->user_id,
+            'post_id' => $post->id
         ]);
 
-        return response()->json(['message' => 'Post liked']);
+        return response()->json(['message' => $post->id]);
     }
 
     public function unlike(Post $post)
     {
         $user = Auth::user();
 
-        $like = $post->likes()->where('user_id', $user->id)->first();
+        $like = like::where('user_id', $user->id)->first();
 
         if (! $like) {
             return response()->json(['message' => 'Not liked yet'], 400);
